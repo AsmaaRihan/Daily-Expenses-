@@ -1,3 +1,4 @@
+import 'package:beginner_App/widget/chart.dart';
 import 'package:beginner_App/widget/new_transaction.dart';
 import 'package:flutter/material.dart';
 
@@ -7,21 +8,19 @@ import 'widget/transaction_list.dart';
 void main() => runApp(MaterialApp(
       title: 'Personal Expenses',
       theme: ThemeData(
-          primaryColor: Colors.purple,
-          accentColor: Colors.amber,
-          fontFamily: 'Quicksand',
-          textTheme: ThemeData.light().textTheme.copyWith(
-              title: TextStyle(
-                  fontFamily: 'OpenSans',
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold)),
-          appBarTheme: AppBarTheme(
+        primaryColor: Colors.purple,
+        accentColor: Colors.amber,
+        fontFamily: 'Quicksand',
+        textTheme: ThemeData.light().textTheme.copyWith(
+            title: TextStyle(
+                fontFamily: 'OpenSans',
+                fontSize: 14,
+                fontWeight: FontWeight.bold)),
+        appBarTheme: AppBarTheme(
             textTheme: ThemeData.light().textTheme.copyWith(
-                title: TextStyle(
-                    fontFamily: 'OpenSans',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
-          )),
+                  title: TextStyle(fontFamily: 'OpenSans', fontSize: 18),
+                )),
+      ),
       home: Home(),
     ));
 
@@ -38,15 +37,22 @@ class _HomeState extends State<Home> {
     // Transaction(id: '3', title: 'SkinCare', amount: 100, date: DateTime.now()),
   ];
 
-  void _addNewTransaction(String txTitle, double txAmount) {
+  void _addNewTransaction(
+      String txTitle, double txAmount, DateTime _selectedDate) {
     final newTx = Transaction(
         id: DateTime.now().toString(),
         title: txTitle,
         amount: txAmount,
-        date: DateTime.now());
+        date: _selectedDate);
 
     setState(() {
       _usertransaction.add(newTx);
+    });
+  }
+
+  void _deleteTransaction(String id) {
+    setState(() {
+      _usertransaction.removeWhere((tx) => tx.id == id);
     });
   }
 
@@ -63,6 +69,12 @@ class _HomeState extends State<Home> {
     );
   }
 
+  List<Transaction> get _returnTransactionList {
+    return _usertransaction.where((tx) {
+      return tx.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,22 +86,18 @@ class _HomeState extends State<Home> {
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.add),
-              onPressed: () => _startAdNewTransactio(context))
+              onPressed: () => _startAdNewTransactio(context)),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                color: Colors.blue[200],
-                child: Text('CHART!'),
-                elevation: 50,
-              ),
+            Chart(
+              _returnTransactionList,
             ),
-            TransactionList(_usertransaction), //schudle of all the transactions
+            TransactionList(_usertransaction,
+                _deleteTransaction), //schudle of all the transactions
           ],
         ),
       ),

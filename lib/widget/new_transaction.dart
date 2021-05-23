@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 //Adds new transactions
 
@@ -15,17 +16,34 @@ class _NewTransactionState extends State<NewTransaction> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
 
+  DateTime _selectedDate;
+
   void submitData() {
     final enteredTitle = titleController.text;
     final enteredAmount = double.parse(amountController.text);
 
     print(enteredTitle);
     print(enteredAmount);
-    if (enteredAmount <= 0 || enteredTitle.isEmpty) {
+    if (enteredAmount <= 0 || enteredTitle.isEmpty || _selectedDate == null) {
       return;
     }
-    widget.addTx(enteredTitle, enteredAmount);
+    widget.addTx(enteredTitle, enteredAmount, _selectedDate);
     Navigator.of(context).pop();
+  }
+
+  void _pickDate() {
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2021),
+            lastDate: DateTime.now())
+        .then((value) {
+      if (value == null) {
+        return;
+      } else {
+        _selectedDate = value;
+      }
+    });
   }
 
   @override
@@ -49,6 +67,19 @@ class _NewTransactionState extends State<NewTransaction> {
               keyboardType: TextInputType.number,
               onSubmitted: (_) => submitData,
               //onChanged: (val) => amountInput = val,
+            ),
+            Row(
+              children: [
+                Text(_selectedDate == null
+                    ? 'No Data Chosen'
+                    : 'Picked Date ${DateFormat.yMd().format(_selectedDate)}'),
+                FlatButton(
+                    onPressed: _pickDate,
+                    child: Text(
+                      'Choose Date',
+                      style: Theme.of(context).textTheme.title,
+                    ))
+              ],
             ),
             FlatButton(
                 onPressed: submitData,

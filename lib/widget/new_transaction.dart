@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:beginner_App/widget/Adaptive_flat_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -48,44 +51,47 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        padding: EdgeInsets.all(5),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            TextField(
-              decoration: InputDecoration(labelText: 'Title'),
-              controller: titleController,
-              onSubmitted: (_) => submitData,
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'amount'),
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+              top: 10,
+              left: 10,
+              right: 10,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+// CupertinoTextField(placeholder: ,),
 
-              controller: amountController,
-              keyboardType: TextInputType.number,
-              onSubmitted: (_) => submitData,
-              //onChanged: (val) => amountInput = val,
-            ),
-            Row(
-              children: [
-                Text(_selectedDate == null
-                    ? 'No Data Chosen'
-                    : 'Picked Date ${DateFormat.yMd().format(_selectedDate)}'),
-                FlatButton(
-                    onPressed: _pickDate,
-                    child: Text(
-                      'Choose Date',
-                      style: Theme.of(context).textTheme.title,
-                    ))
-              ],
-            ),
-            FlatButton(
-                onPressed: submitData,
-                child: Text('Add Transacion'),
-                textColor: Colors.purple),
-          ],
+              TextField(
+                decoration: InputDecoration(labelText: 'Title'),
+                controller: titleController,
+                onSubmitted: (_) => submitData,
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'amount'),
+
+                controller: amountController,
+                keyboardType: TextInputType.number,
+                onSubmitted: (_) => submitData,
+                //onChanged: (val) => amountInput = val,
+              ),
+              Row(
+                children: [
+                  Text(_selectedDate == null
+                      ? 'No Data Chosen'
+                      : 'Picked Date ${DateFormat.yMd().format(_selectedDate)}'),
+                  AdaptiveFlatButton('Choose Date', _pickDate),
+                ],
+              ),
+              FlatButton(
+                  onPressed: submitData,
+                  child: Text('Add Transacion'),
+                  textColor: Colors.purple),
+            ],
+          ),
         ),
       ),
     );

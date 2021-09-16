@@ -1,4 +1,4 @@
-# beginner_App
+# Daily Expenses Application
 
 A new Flutter project.
 
